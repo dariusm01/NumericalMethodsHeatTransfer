@@ -30,11 +30,11 @@ T(1:yNodes,1) = 0; % Left
 T(1:yNodes,end) = 0; % right
 
 %% Corners 
-T(1,1) = (h1*Tinf1/dy + k*T2/dx^2 + h3*Tinf2/dx + k*T6/dy^2 + egen)/(h1/dy + k/dx^2 + h3/dx + k/dy^2); % Upper Left Corner
+T(1,1) = (h1*Tinf1/dy + k*T(m+1,n)/dx^2 + h3*Tinf2/dx + k*T(m,n+1)/dy^2 + egen/2)/(h1/dy + k/dx^2 + h3/dx + k/dy^2); % Upper Left Corner
 %Using a 5x5 Box 
-T(end,1) = (k*T5/dx^2 + Tinf2*(h2/dy + h3/dx) + k*T10/dy^2 + egen)/(k/dx^2 + h2/dy + h3/dx + k/dy^2); % Lower Left Corner
-T(1,end) = (h1*Tinf1/dy + k*T22/dx^2 + h4*Tinf2/dx + k*T16/dy^2 + egen)/(h1/dy + k/dx^2 + h4/dx + k/dy^2); % Upper Right Corner
-T(end,end) = 1; % Lower Right Corner
+T(end,1) = (k*T(m-1,n)/dx^2 + Tinf2*(h2/dy + h3/dx) + k*T(m,n+1)/dy^2 + egen/2)/(k/dx^2 + h2/dy + h3/dx + k/dy^2); % Upper Right Corner
+T(1,end) = (h1*Tinf1/dy + k*T22/dx^2 + h4*Tinf2/dx + k*T16/dy^2 + egen/2)/(h1/dy + k/dx^2 + h4/dx + k/dy^2); % Lower Left Corner
+T(end,end) = (k*T24/dx^2 + Tinf2*(h2/dy +h4/dx) + k*T20/dy^2 + egen/2)/(k/dx^2 + h2/dy + h4/dx +k/dy^2); % Lower Right Corner
 
 
 
