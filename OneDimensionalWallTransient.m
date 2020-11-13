@@ -5,7 +5,7 @@ h1 = 2350; % W/m^2k
 h2 = 360; % W/m^2k
 Tinf1 = KelvintoC(3350); % 3350k to °C
 Tinf2 = KelvintoC(295); % 295k to °C
-L = 1e-2; % m 
+L = cm_to_m(1); % 1cm to m 
 n = 10; % number of nodes
 dx = L/(n-1); % m [length/(number of nodes - 1)]
 rho = 7999.4859; % kg/m^3
@@ -36,13 +36,14 @@ for i = 2:timeSteps
     end 
     
     % Boundary 2
-    T(i,end) = ((criteria - 2*tau*(h2*dx/k))*T(i-1,end)) + (2*tau*T(i-1,end-1)) + (2*tau*((h2*dx)/k)*Tinf2) + (tau*egen*dx^2)/k;
+    T(i,n) = ((criteria - 2*tau*(h2*dx/k))*T(i-1,n)) + (2*tau*T(i-1,n-1)) + (2*tau*((h2*dx)/k)*Tinf2) + (tau*egen*dx^2)/k;
 end 
 
 FinalTempsTransient = T;
 
 %% Plotting Temperature History of boundaries
 figure(1)
+% All rows, first column
 plot(FinalTempsTransient(:,1))
 grid on
 xlabel("Time steps")
@@ -50,7 +51,8 @@ ylabel("Temperature °C")
 title("Temperature History of Combustion Chamber Boundary")
 
 figure(2)
-plot(FinalTempsTransient(:,end))
+% All rows, last column
+plot(FinalTempsTransient(:,n))
 grid on
 xlabel("Time steps")
 ylabel("Temperature °C")
@@ -73,4 +75,8 @@ end
 
 function T = KelvintoC(x)
 T = x-273.15;
+end 
+
+function y = cm_to_m(x)
+y = x/100;
 end 
