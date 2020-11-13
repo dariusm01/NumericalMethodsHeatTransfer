@@ -1,10 +1,10 @@
 %% Defining paramters
 k = Interpolation(300, 200, 14.9, 12.6, 295); % W/mk
 egen = 0; % W/m^3
-h1 = 2350; % W/m^2k
-h2 = 360; % W/m^2k
-h3 = 5; % W/m^2k
-h4 = 45; % W/m^2k
+h1 = 2350; % W/m^2k (left)
+h2 = 360; % W/m^2k (right)
+h3 = 5; % W/m^2k (top) 
+h4 = 45; % W/m^2k (bottom)
 Tinf1 = KelvintoC(3350); % 3350k to °C
 Tinf2 = KelvintoC(295); % 295k to °C
 L = cm_to_m(1); % 1cm to m 
