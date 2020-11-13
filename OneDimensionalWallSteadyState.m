@@ -35,7 +35,7 @@ while iter < iterLimit
     iter = iter + 1; 
 end 
 
-FinalTempsSteadyState = temps
+FinalTempsSteadyState = temps;
 
 %% Plotting
 figure(1)
