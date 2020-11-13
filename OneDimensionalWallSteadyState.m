@@ -5,7 +5,7 @@ h1 = 2350; % W/m^2k
 h2 = 360; % W/m^2k
 Tinf1 = KelvintoC(3350); % 3350k to °C
 Tinf2 = KelvintoC(295); % 295k to °C
-L = 1e-2; % m 
+L = cm_to_m(1); % 1cm to m 
 n = 100; % number of nodes
 dx = L/(n-1); % m [length1/(number of nodes - 1)]
 iter = 0; % iteration counter
@@ -54,4 +54,8 @@ function x = Interpolation(y2, y1, x2, x1, YourVal)
 m = (y2-y1)/(x2-x1);
 
 x = ((YourVal - y1)/m) + x1;
+end 
+
+function y = cm_to_m(x)
+y = x/100;
 end 
