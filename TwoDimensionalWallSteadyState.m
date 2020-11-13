@@ -30,7 +30,8 @@ T(1:yNodes,1) = 0; % Left
 T(1:yNodes,end) = 0; % right
 
 %% Corners 
-T(1,1) = 1; % Upper Left Corner
+T(1,1) = (h1*Tinf1/dy + k*T2/dx^2 + h3*Tinf2/dx + k*T4/dy^2 + egen)/(h1/dy + k/dx^2 + h3/dx + k/dy^2); % Upper Left Corner
+%T2 = Tm+1,n; T4 = Tm,n+1
 T(end,1) = 1; % Lower Left Corner
 T(1,end) = 1; % Upper Right Corner
 T(end,end) = 1; % Lower Right Corner
