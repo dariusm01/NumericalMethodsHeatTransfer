@@ -6,7 +6,7 @@ h2 = 360; % W/m^2k
 Tinf1 = KelvintoC(3350); % 3350k to °C
 Tinf2 = KelvintoC(295); % 295k to °C
 L = cm_to_m(1); % 1cm to m 
-n = 100; % number of nodes
+n = 3; % number of nodes
 dx = L/(n-1); % m [length1/(number of nodes - 1)]
 iter = 0; % iteration counter
 iterLimit = 1000000;
@@ -35,11 +35,11 @@ while iter < iterLimit
     iter = iter + 1; 
 end 
 
-FinalTempsSteadyState = temps;
+FinalTempsSteadyState1D = temps;
 
 %% Plotting
 figure(1)
-plot(x,FinalTempsSteadyState)
+plot(x,FinalTempsSteadyState1D)
 grid on
 title("1 Dimensional Steady State Temperatures")
 xlabel("Length (m)")
