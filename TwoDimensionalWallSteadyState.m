@@ -96,6 +96,20 @@ end
 
 FinalTempsSteadyState2D = temps;
 
+x = 0:dx:L;
+y = 0:dy:H;
+
+%% Plotting
+figure(1)
+contourf(x,y,FinalTempsSteadyState2D);
+title("2D Dimensional Steady State Temperatures")
+xlabel("Length (m)")
+ylabel("Height (m)")
+colorbar
+
+figure(2)
+mesh(FinalTempsSteadyState2D);
+
 function T = KelvintoC(x)
 T = x-273.15;
 end 
