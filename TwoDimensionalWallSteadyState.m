@@ -12,7 +12,7 @@ Tinf4 = Tinf2;
 L = cm_to_m(1); % 1cm to m 
 H = cm_to_m(30); % 30cm to m 
 iter = 0; % iteration counter
-iterLimit = 1000000;
+iterLimit = 10000000;
 
 %% Nodes (horizontal & vertical)
 dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
@@ -102,13 +102,17 @@ y = 0:dy:H;
 %% Plotting
 figure(1)
 contourf(x,y,FinalTempsSteadyState2D);
-title("2D Dimensional Steady State Temperatures")
+title("2D Dimensional Steady State Temperatures Contour")
 xlabel("Length (m)")
 ylabel("Height (m)")
 colorbar
 
 figure(2)
-mesh(FinalTempsSteadyState2D);
+mesh(x,y,FinalTempsSteadyState2D);
+title("2D Dimensional Steady State Temperatures Mesh")
+xlabel("Length (m)")
+ylabel("Height (m)")
+colorbar
 
 function T = KelvintoC(x)
 T = x-273.15;
