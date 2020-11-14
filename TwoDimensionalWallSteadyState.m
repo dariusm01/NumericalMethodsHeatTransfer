@@ -105,14 +105,16 @@ contourf(x,y,FinalTempsSteadyState2D);
 title("2D Dimensional Steady State Temperatures Contour")
 xlabel("Length (m)")
 ylabel("Height (m)")
-colorbar
+c = colorbar;
+c.Label.String = "Temperatures °C";
 
 figure(2)
 mesh(x,y,FinalTempsSteadyState2D);
 title("2D Dimensional Steady State Temperatures Mesh")
 xlabel("Length (m)")
 ylabel("Height (m)")
-colorbar
+c = colorbar;
+c.Label.String = "Temperatures °C";
 
 function T = KelvintoC(x)
 T = x-273.15;
