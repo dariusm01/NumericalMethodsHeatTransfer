@@ -38,35 +38,36 @@ T(1:yNodes,end) = 0; % right
 
 while iter < iterLimit
     
-       for m = 1:xNodes
-           for n = 1:yNodes
+       for m = 2:xNodes
+           for n = 2:yNodes
             % Upper Left Corner
+            
             temps(1,1) = ((h1*dx*(dy^2)*Tinf1) + (k*(dy^2)*T(m+1,n)) + (k*(dx^2)*T(m,n+1)) + (h3*(dx^2)*dy*Tinf3)+...
                 ((egen/2)*dx^2*dy^2))/((h1*dx*(dy^2)) + k*dy^2 + k*dx^2 + (h3*(dx^2)*dy));
 
             % Top
-            temps(1,1:xNodes) = 1; % Still need eqs 
+            temps(1,2:xNodes-1) = 1; % Still need eqs 
 
             % Upper Right Corner
             temps(1,xNodes) = ((h3*dy*(dx^2)*Tinf3) + (k*(dy^2)*T(m-1,n)) + (k*(dx^2)*T(m,n+1)) + (h2*(dy^2)*dx*Tinf2)+...
                 ((egen/2)*dx^2*dy^2))/((h3*dy*(dx^2)) + k*dx^2 + k*dy^2 + (h2*(dy^2)*dx));
 
             % Left Side
-            temps(1:yNodes,1) = 1;  % Still need eqs 
+            temps(2:yNodes-1,1) = 1;  % Still need eqs 
 
             % Lower Left Corner
             temps(yNodes,1) = ((h1*dx*(dy^2)*Tinf1) + (k*(dy^2)*T(m+1,n)) + (k*(dx^2)*T(m,n-1)) + (h4*(dx^2)*dy*Tinf4)+...
                 ((egen/2)*dx^2*dy^2))/((h1*dx*(dy^2)) + k*dx^2 + k*dy^2 + (h4*(dx^2)*dy));
 
             % Bottom 
-            temps(yNodes,1:xNodes) = 1;  % Still need eqs 
+            temps(yNodes,2:xNodes-1) = 1;  % Still need eqs 
 
             % Lower Right Corner
             temps(xNodes,yNodes) = ((h4*dy*(dx^2)*Tinf4) + (k*(dy^2)*T(m-1,n)) + (k*(dx^2)*T(m,n-1)) + (h2*(dy^2)*dx*Tinf2)+...
                 ((egen/2)*dx^2*dy^2))/((h4*dy*(dx^2)) + k*dx^2 + k*dy^2 + (h2*(dy^2)*dx));
 
             % Right Side
-            temps(1:yNodes,end) = 1;  % Still need eqs 
+            temps(2:yNodes-1,xNodes) = 1;  % Still need eqs 
            end 
        end 
         
