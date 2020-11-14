@@ -38,8 +38,7 @@ T(1:yNodes,end) = 0; % right
 
 while iter < iterLimit
     
-       for m = 2:xNodes
-           for n = 2:yNodes
+      
             % Upper Left Corner
             
             temps(1,1) = ((h1*dx*(dy^2)*Tinf1) + (k*(dy^2)*T(m+1,n)) + (k*(dx^2)*T(m,n+1)) + (h3*(dx^2)*dy*Tinf3)+...
@@ -68,8 +67,7 @@ while iter < iterLimit
 
             % Right Side
             temps(2:yNodes-1,xNodes) = 1;  % Still need eqs 
-           end 
-       end 
+
         
      % Interior nodes    
     for i = 2:xNodes-1 % rows
