@@ -12,18 +12,20 @@ Tinf4 = Tinf2;
 L = cm_to_m(1); % 1cm to m 
 H = cm_to_m(30); % 30cm to m 
 iter = 0; % iteration counter
-iterLimit = 200;
+iterLimit = 1000000;
 
 %% Nodes (horizontal & vertical)
-dimension = [10 5]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
+% similar to a coordinate (x,y)
 
 xNodes = dimension(1); % Across
 dx = L/(xNodes - 1);
 
 yNodes = dimension(2); % Down
-dy = H/(yNodes -1);
+dy = H/(yNodes - 1);
 
 % Transposed so now x = cols & y = rows
+% x is across & y is downward
 T = zeros(xNodes,yNodes).'; % 'old' temps
 
 temps = zeros(xNodes,yNodes).'; % 'new' temps
@@ -92,6 +94,7 @@ while iter < iterLimit
     
 end 
 
+FinalTempsSteadyState2D = temps;
 
 function T = KelvintoC(x)
 T = x-273.15;
