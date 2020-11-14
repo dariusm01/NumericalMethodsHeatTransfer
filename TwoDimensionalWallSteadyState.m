@@ -23,6 +23,7 @@ dx = L/(xNodes - 1);
 yNodes = dimension(2); % Down
 dy = H/(yNodes -1);
 
+% Transposed so now x = cols & y = rows
 T = zeros(xNodes,yNodes).'; % 'old' temps
 
 temps = zeros(xNodes,yNodes).'; % 'new' temps
@@ -53,28 +54,27 @@ while iter < iterLimit
         ((egen/2)*dx^2*dy^2))/((h4*dy*(dx^2)) + k*dx^2 + k*dy^2 + (h2*(dy^2)*dx));
 
     %% Sides
-    for m = 2:yNodes-1 
-        for n = 2:xNodes-1 
+    for m = 2:yNodes-1 % y is the rows 
+        for n = 2:xNodes-1  % x is the cols
             
         % Top
-        temps(1,n) = ((h3*(dx^2)*dy*Tinf3) + (2*k*(dy^2)*(T(m-1,n) + T(m+1,n))) +...
-            (2*k*(dx^2)*T(m,n+1)) + (egen*(dx^2)*(dy^2)))/((h3*(dx^2)*dy) + (4*k*(dy^2)) +...
+        temps(1,n) = ((h3*(dx^2)*dy*Tinf3) + (2*k*(dy^2)*(T(m,n-1) + T(m,n+1))) +...
+            (2*k*(dx^2)*T(m+1,n)) + (egen*(dx^2)*(dy^2)))/((h3*(dx^2)*dy) + (4*k*(dy^2)) +...
             (2*k*(dx^2)));
 
         % Bottom
-        temps(end,n) = ((h4*(dx^2)*dy*Tinf4) + (2*k*(dy^2)*(T(m-1,n) + T(m+1,n))) +...
-            (2*k*(dx^2)*T(m,n-1)) + (egen*(dx^2)*(dy^2)))/((h4*(dx^2)*dy) + (4*k*(dy^2)) +...
+        temps(end,n) = ((h4*(dx^2)*dy*Tinf4) + (2*k*(dy^2)*(T(m,n-1) + T(m,n+1))) +...
+            (2*k*(dx^2)*T(m-1,n)) + (egen*(dx^2)*(dy^2)))/((h4*(dx^2)*dy) + (4*k*(dy^2)) +...
             (2*k*(dx^2)));
 
-
         % Left
-        temps(m,1) = ((h1*(dy^2)*dx*Tinf1) + (2*k*(dx^2)*(T(m,n-1) + T(m,n+1))) +...
-            (2*k*(dy^2)*T(m+1,n)) + (egen*(dx^2)*(dy^2)))/((h1*(dy^2)*dx) + (4*k*(dx^2)) +...
+        temps(m,1) = ((h1*(dy^2)*dx*Tinf1) + (2*k*(dx^2)*(T(m-1,n) + T(m+1,n))) +...
+            (2*k*(dy^2)*T(m,n+1)) + (egen*(dx^2)*(dy^2)))/((h1*(dy^2)*dx) + (4*k*(dx^2)) +...
             (2*k*(dy^2)));
 
         % Right
-        temps(m,end) = ((h2*(dy^2)*dx*Tinf2) + (2*k*(dx^2)*(T(m,n-1) + T(m,n+1))) +...
-            (2*k*(dy^2)*T(m-1,n)) + (egen*(dx^2)*(dy^2)))/((h2*(dy^2)*dx) + (4*k*(dx^2)) +...
+        temps(m,end) = ((h2*(dy^2)*dx*Tinf2) + (2*k*(dx^2)*(T(m-1,n) + T(m+1,n))) +...
+            (2*k*(dy^2)*T(m,n-1)) + (egen*(dx^2)*(dy^2)))/((h2*(dy^2)*dx) + (4*k*(dx^2)) +...
             (2*k*(dy^2)));
         end 
     end 
@@ -82,11 +82,10 @@ while iter < iterLimit
     %% Interior nodes    
     for i = 2:yNodes-1
         for j = 2:xNodes-1 
-        temps(i,j) = ((k*dy^2*(T(i+1,j)+T(i-1,j))) + (k*dx^2*(T(i,j+1)+T(i,j-1))) +...
+        temps(i,j) = ((k*dy^2*(T(i,j+1)+T(i,j-1))) + (k*dx^2*(T(i+1,j)+T(i-1,j))) +...
             (egen*(dx^2)*(dy^2)))/(k*(2*dy^2 +2*dx^2));
         end 
     end 
-    
     
     T = temps;
     iter = iter + 1; 
