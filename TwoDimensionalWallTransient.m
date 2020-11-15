@@ -101,6 +101,12 @@ for i = 2:rows-1
     end 
 end 
 
+% % I need a way to place the temps from this matrix into the (steps, nodes) matrix so you 
+% % can see how each node updates after each timestep 
+% for i = 2:timeSteps
+%     T(i,:) = 
+% end 
+
 function alpha = ThermalDiffusivity(rho, cp, k)
 alpha = k/(rho*cp);
 end 
