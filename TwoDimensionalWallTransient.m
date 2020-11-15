@@ -18,7 +18,7 @@ dt = 0.005; % size of steps
 timeSteps = 50000; % number of steps
 
 %% Nodes (horizontal & vertical)
-dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [5 7]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(1); % Across
@@ -37,13 +37,19 @@ if  criteria < 0
 end 
 
 
+TwoDNodes = NodeSystem(xNodes, yNodes);
 
-% Interior Nodes
-% T(i,j) = (tau*((dy^2*(T(i-1,j-1) +...
-%          T(i-1,j+1))) - (2*T(i-1,j)*(dy^2+dx^2)) +...
-%         (dx^2*(T(i-1,j) + T(i-2,j))) + (egen*(dx*dy))/k)) + T(i-2,j);
+%% Referring to Node system
 
+% Upper Left corner = TwoDNodes(1)
+% Bottom Left corner = TwoDNodes(end,1)
+% Upper Right corner = TwoDNodes(1,end)
+% Bottom Right corner = TwoDNodes(end,1)
 
+% Top = TwoDNodes(1,2:yNodes-1)
+% Bottom = TwoDNodes(end,2:yNodes-1)
+% Left side = TwoDNodes(2:xNodes-1,1)
+% Right Side = TwoDNodes(2:xNodes-1,end)
 
 function alpha = ThermalDiffusivity(rho, cp, k)
 alpha = k/(rho*cp);
@@ -66,4 +72,42 @@ end
 
 function y = cm_to_m(x)
 y = x/100;
+end 
+
+function z = NodeSystem(rows, cols)
+
+    Matrix = zeros(rows,cols);
+    
+    % Top 
+    for i = 1:cols
+        Matrix(1,i) = i; 
+    end 
+
+    % Bottom 
+    for i = 1:cols
+        Matrix(end,i) = cols + i;
+    end 
+
+    % Left Side
+    for i = 2:rows-1
+        Matrix(i,1) = 2*cols + (i-1);
+    end 
+
+    % Right Side
+    for i = 2:rows-1
+        Matrix(i,end) = 2*cols + (rows-3) + i;
+    end 
+
+    A = 1;
+    
+    % Inside
+    for i=2:rows-1
+        for j=2:cols -1
+            Matrix(i,j) = (2*cols)+ (2*(rows-2))  + A;
+            A = A+1;
+        end 
+    end 
+    
+    z = Matrix;
+    
 end 
