@@ -21,30 +21,32 @@ timeSteps = 50000; % number of steps
 dimension = [5 7]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
-xNodes = dimension(1); % Across
+xNodes = dimension(2); % Across
 dx = L/(xNodes - 1);
 
-yNodes = dimension(2); % Down
+yNodes = dimension(1); % Down
 dy = H/(yNodes - 1);
 
 % mesh Fourier number
 tau = meshFourier(alpha, dt, dx, dy); 
 criteria = 1-4*tau;
 
+cols = xNodes;
+rows = yNodes;
 %% Explicit Stability Criterion
 if  criteria < 0
     warning("Will not converge, consider decreasing dt")
 end 
 
 
-TwoDNodes = NodeSystem(xNodes, yNodes);
+TwoDNodes = NodeSystem(rows, cols);
 
 %% Referring to Node system
 
 % Upper Left corner = TwoDNodes(1)
 % Bottom Left corner = TwoDNodes(end,1)
 % Upper Right corner = TwoDNodes(1,end)
-% Bottom Right corner = TwoDNodes(end,1)
+% Bottom Right corner = TwoDNodes(end,end)
 
 % Top = TwoDNodes(1,2:yNodes-1)
 % Bottom = TwoDNodes(end,2:yNodes-1)
