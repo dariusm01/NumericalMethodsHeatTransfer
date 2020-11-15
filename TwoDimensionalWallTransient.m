@@ -18,7 +18,7 @@ dt = 0.005; % size of steps
 timeSteps = 50000; % number of steps
 
 %% Nodes (horizontal & vertical)
-dimension = [5 7]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [10 10]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(2); % Across
@@ -31,12 +31,20 @@ dy = H/(yNodes - 1);
 tau = meshFourier(alpha, dt, dx, dy); 
 criteria = 1-4*tau;
 
-cols = xNodes;
 rows = yNodes;
+cols = xNodes;
+
 %% Explicit Stability Criterion
 if  criteria < 0
     warning("Will not converge, consider decreasing dt")
 end 
+
+
+%% Using the explicit approach
+n = rows*cols; % total number of nodes
+T = zeros(timeSteps, n);
+Tinitial = 295; % k
+T(1,:) = Tinitial; % setting the first row to the intial temp. These will get updated down the column
 
 
 TwoDNodes = NodeSystem(rows, cols);
