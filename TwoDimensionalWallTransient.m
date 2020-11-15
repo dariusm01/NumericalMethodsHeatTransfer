@@ -36,6 +36,15 @@ if  criteria < 0
     warning("Will not converge, consider decreasing dt")
 end 
 
+
+
+% Interior Nodes
+% T(i,j) = (tau*((dy^2*(T(i-1,j-1) +...
+%          T(i-1,j+1))) - (2*T(i-1,j)*(dy^2+dx^2)) +...
+%         (dx^2*(T(i-1,j) + T(i-2,j))) + (egen*(dx*dy))/k)) + T(i-2,j);
+
+
+
 function alpha = ThermalDiffusivity(rho, cp, k)
 alpha = k/(rho*cp);
 end 
