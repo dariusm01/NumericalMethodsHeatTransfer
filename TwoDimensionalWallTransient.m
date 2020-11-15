@@ -27,17 +27,13 @@ dx = L/(xNodes - 1);
 yNodes = dimension(1); % Down
 dy = H/(yNodes - 1);
 
-% mesh Fourier number
-tau = meshFourier(alpha, dt, dx, dy); 
-criteria = 1-4*tau;
-
 rows = yNodes;
 cols = xNodes;
 
 %% Explicit Stability Criterion
-if  criteria < 0
-    warning("Will not converge, consider decreasing dt")
-end 
+% if  criteria < 0
+%     warning("Will not converge, consider decreasing dt")
+% end 
 
 
 %% Using the explicit approach
@@ -48,25 +44,65 @@ T(1,:) = Tinitial; % setting the first row to the intial temp. These will get up
 
 
 TwoDNodes = NodeSystem(rows, cols);
+temps = zeros(size(TwoDNodes));
+Ts = 0.5*ones(size(TwoDNodes)); % very generic
 
 %% Referring to Node system
-
-% Upper Left corner = TwoDNodes(1)
-% Bottom Left corner = TwoDNodes(end,1)
-% Upper Right corner = TwoDNodes(1,end)
-% Bottom Right corner = TwoDNodes(end,end)
-
 % Top = TwoDNodes(1,2:yNodes-1)
 % Bottom = TwoDNodes(end,2:yNodes-1)
 % Left side = TwoDNodes(2:xNodes-1,1)
 % Right Side = TwoDNodes(2:xNodes-1,end)
 
-function alpha = ThermalDiffusivity(rho, cp, k)
-alpha = k/(rho*cp);
+%% Populating the corners
+% Upper Left corner 
+temps(1) = 100; % generic for now, insert eq
+
+% Bottom Left corner 
+temps(end,1) = -100; % generic for now, insert eq    
+
+% Upper Right corner
+temps(1,end) = 50; % generic for now, insert eq    
+
+% Bottom Right corner 
+temps(end,end) = -50; % generic for now, insert eq     
+
+
+%% Populating the top and bottom
+for i=1:rows
+    for j = 1:cols
+        
+        % Top
+        if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
+            temps(i,j) = 5; % generic for now, insert eq     
+            
+        % Bottom    
+        elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
+            temps(i,j) = 7; % generic for now, insert eq           
+        end 
+    end 
 end 
 
-function tau = meshFourier(alpha, dt, dx, dy)
-tau = (alpha*dt)/(dx*dy);
+%% Populating the sides
+for i = 2:rows-1
+    
+    % Left side
+    temps(i,1) = 9; % generic for now, insert eq     
+    
+    % Right side
+    temps(i,end) = 11; % generic for now, insert eq     
+end 
+
+%% Interior Nodes
+for i = 2:rows-1
+    for j = 2:cols-1
+        
+        temps(i,j) = (((alpha*dt)/((dx^2)*(dy^2))) * ((-Ts(i,j)*(2*dy^2 + 2*dx^2)) + (dy^2*(Ts(i,j-1)+Ts(i,j+1)))+... 
+            (dx^2*(Ts(i-1,j)+Ts(i+1,j))) + (egen*(dx^2 * dy^2)/k))) + Ts(i,j);
+    end 
+end 
+
+function alpha = ThermalDiffusivity(rho, cp, k)
+alpha = k/(rho*cp);
 end 
 
 function x = Interpolation(y2, y1, x2, x1, YourVal)
