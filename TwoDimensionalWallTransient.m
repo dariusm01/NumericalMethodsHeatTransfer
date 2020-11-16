@@ -50,16 +50,24 @@ Ts = 0.5*ones(size(TwoDNodes)); % very generic
 for k = 2:timeSteps
     %% Populating the corners
     % Upper Left corner 
-    temps(1) = 100; % generic for now, insert eq
+    temps(1,1) = Ts(1,1) + ((-Ts(1,1)*(dx^2 + dx^2 + (((h3*(dx^2)*dy) + (h1*(dy^2)*dx))/k))) + (dy^2*(Ts(1,2)))+...
+        (dx^2*(Ts(2,1))) + (((h3*(dx^2)*dy)/k)*Tinf3) + (((h1*(dy^2)*dx)/k)*Tinf1) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));  
 
     % Bottom Left corner 
-    temps(end,1) = -100; % generic for now, insert eq    
+    temps(end,1) = Ts(end,1) + ((-Ts(end,1)*(dx^2 + dx^2 + (((h4*(dx^2)*dy) + (h1*(dy^2)*dx))/k))) + (dy^2*(Ts(end,2)))+...
+        (dx^2*(Ts(end-1,1))) + (((h4*(dx^2)*dy)/k)*Tinf4) + (((h1*(dy^2)*dx)/k)*Tinf1) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2))); 
 
     % Upper Right corner
-    temps(1,end) = 50; % generic for now, insert eq    
+    temps(1,end) = Ts(1,end) + ((-Ts(1,end)*(dx^2 + dx^2 + (((h3*(dx^2)*dy) + (h2*(dy^2)*dx))/k))) + (dy^2*(Ts(1,end-1)))+...
+        (dx^2*(Ts(2,end))) + (((h3*(dx^2)*dy)/k)*Tinf3) + (((h2*(dy^2)*dx)/k)*Tinf2) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));
 
     % Bottom Right corner 
-    temps(end,end) = -50; % generic for now, insert eq     
+    temps(end,end) = Ts(end,end) + ((-Ts(end,end)*(dx^2 + dx^2 + (((h4*(dx^2)*dy) + (h2*(dy^2)*dx))/k))) + (dy^2*(Ts(end,end-1)))+...
+        (dx^2*(Ts(end-1,end))) + (((h4*(dx^2)*dy)/k)*Tinf4) + (((h2*(dy^2)*dx)/k)*Tinf2) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));  
 
 
     %% Populating the top and bottom
@@ -97,11 +105,6 @@ for k = 2:timeSteps
     end 
 
     Ts = temps;
-% % I need a way to place the temps from this matrix into the (steps, nodes) matrix so you 
-% % can see how each node updates after each timestep 
-% for i = 2:timeSteps
-%     T(i,:) = 
-% end 
 
 B = reshape(temps,[1,n]);
 
