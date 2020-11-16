@@ -14,8 +14,8 @@ H = cm_to_m(30); % 30cm to m
 rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
-dt = 0.005; % size of steps
-timeSteps = 50000; % number of steps
+dt = 0.0005; % size of steps
+timeSteps = 50; % number of steps
 
 %% Nodes (horizontal & vertical)
 dimension = [10 10]; % any # of nodes (x-direction) & nodes (y-direction)
@@ -30,16 +30,11 @@ dy = H/(yNodes - 1);
 rows = yNodes;
 cols = xNodes;
 
-%% Explicit Stability Criterion
-% if  criteria < 0
-%     warning("Will not converge, consider decreasing dt")
-% end 
-
 
 %% Using the explicit approach
 n = rows*cols; % total number of nodes
 T = zeros(timeSteps, n);
-Tinitial = 295; % k
+Tinitial =  KelvintoC(295); % 295k to °C
 T(1,:) = Tinitial; % setting the first row to the intial temp. These will get updated down the column
 
 
@@ -52,64 +47,69 @@ Ts = 0.5*ones(size(TwoDNodes)); % very generic
 % Bottom = TwoDNodes(end,2:yNodes-1)
 % Left side = TwoDNodes(2:xNodes-1,1)
 % Right Side = TwoDNodes(2:xNodes-1,end)
+for k = 2:timeSteps
+    %% Populating the corners
+    % Upper Left corner 
+    temps(1,1) = Ts(1,1) + ((-Ts(1,1)*(dx^2 + dx^2 + (((h3*(dx^2)*dy) + (h1*(dy^2)*dx))/k))) + (dy^2*(Ts(1,2)))+...
+        (dx^2*(Ts(2,1))) + (((h3*(dx^2)*dy)/k)*Tinf3) + (((h1*(dy^2)*dx)/k)*Tinf1) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));  
 
-%% Populating the corners
-% Upper Left corner 
-temps(1,1) = (alpha*dt/dx^2*dy^2)*(h1*dx^2*((Tinf1-T(1,1))/dy) + k*(T(2,1)-T(1,1)) + h3*dx*(Tinf2-T(1,1))...
-    + (k*dx^2*(T(1,2)-T(1,1))/dy^2) + egen*dx^2/2) + T(1,1); % generic for now, insert eq
+    % Bottom Left corner 
+    temps(end,1) = Ts(end,1) + ((-Ts(end,1)*(dx^2 + dx^2 + (((h4*(dx^2)*dy) + (h1*(dy^2)*dx))/k))) + (dy^2*(Ts(end,2)))+...
+        (dx^2*(Ts(end-1,1))) + (((h4*(dx^2)*dy)/k)*Tinf4) + (((h1*(dy^2)*dx)/k)*Tinf1) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2))); 
 
-% Bottom Left corner 
-temps(end,1) = (alpha*dt/dx^2*dy^2)*(h1*dx^2*((Tinf1-T(end,1))/dy) + k*(T(end,2)-T(end,1)) + h4*dx*(Tinf2-T(end,1))...
-    + (k*dx^2*(T(end-1,1)-T(end,1))/dy^2) + egen*dx^2/2) + T(end,1); % generic for now, insert eq    
+    % Upper Right corner
+    temps(1,end) = Ts(1,end) + ((-Ts(1,end)*(dx^2 + dx^2 + (((h3*(dx^2)*dy) + (h2*(dy^2)*dx))/k))) + (dy^2*(Ts(1,end-1)))+...
+        (dx^2*(Ts(2,end))) + (((h3*(dx^2)*dy)/k)*Tinf3) + (((h2*(dy^2)*dx)/k)*Tinf2) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));
 
-% Upper Right corner
-temps(1,end) = (alpha*dt/dx^2*dy^2)*(h2*dx^2*((Tinf2-T(1,end))/dy) + k*(T(1,end-1)-T(1,end)) + h3*dx*(Tinf2-T(1,end))...
-    + (k*dx^2*(T(2,end)-T(1,end))/dy^2) + egen*dx^2/2) + T(1,end); % generic for now, insert eq    
-
-% Bottom Right corner 
-temps(end,end) = (alpha*dt/dx^2*dy^2)*(h2*dx^2*((Tinf2-T(end,end))/dy) + k*(T(end,end-1)-T(end,end)) + h4*dx*(Tinf2-T(1end,end))...
-    + (k*dx^2*(T(end-1,end)-T(end,end))/dy^2) + egen*dx^2/2) + T(end,end); % generic for now, insert eq     
+    % Bottom Right corner 
+    temps(end,end) = Ts(end,end) + ((-Ts(end,end)*(dx^2 + dx^2 + (((h4*(dx^2)*dy) + (h2*(dy^2)*dx))/k))) + (dy^2*(Ts(end,end-1)))+...
+        (dx^2*(Ts(end-1,end))) + (((h4*(dx^2)*dy)/k)*Tinf4) + (((h2*(dy^2)*dx)/k)*Tinf2) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));  
 
 
-%% Populating the top and bottom
-for i=1:rows
-    for j = 1:cols
-        
-        % Top
-        if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
-            temps(i,j) = 5; % generic for now, insert eq     
-            
-        % Bottom    
-        elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
-            temps(i,j) = 7; % generic for now, insert eq           
+    %% Populating the top and bottom
+    for i=1:rows
+        for j = 1:cols
+
+            % Top
+            if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
+                temps(i,j) = 5; % generic for now, insert eq     
+
+            % Bottom    
+            elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
+                temps(i,j) = 7; % generic for now, insert eq           
+            end 
         end 
     end 
-end 
 
-%% Populating the sides
-for i = 2:rows-1
-    
-    % Left side
-    temps(i,1) = 9; % generic for now, insert eq     
-    
-    % Right side
-    temps(i,end) = 11; % generic for now, insert eq     
-end 
+    %% Populating the sides
+    for i = 2:rows-1
 
-%% Interior Nodes
-for i = 2:rows-1
-    for j = 2:cols-1
-        
-        temps(i,j) = (((alpha*dt)/((dx^2)*(dy^2))) * ((-Ts(i,j)*(2*dy^2 + 2*dx^2)) + (dy^2*(Ts(i,j-1)+Ts(i,j+1)))+... 
-            (dx^2*(Ts(i-1,j)+Ts(i+1,j))) + (egen*(dx^2 * dy^2)/k))) + Ts(i,j);
+        % Left side
+        temps(i,1) = 9; % generic for now, insert eq     
+
+        % Right side
+        temps(i,end) = 11; % generic for now, insert eq     
     end 
-end 
 
-% % I need a way to place the temps from this matrix into the (steps, nodes) matrix so you 
-% % can see how each node updates after each timestep 
-% for i = 2:timeSteps
-%     T(i,:) = 
-% end 
+    %% Interior Nodes
+    for i = 2:rows-1
+        for j = 2:cols-1
+
+            temps(i,j) = (((alpha*dt)/((dx^2)*(dy^2))) * ((-Ts(i,j)*(2*dy^2 + 2*dx^2)) + (dy^2*(Ts(i,j-1)+Ts(i,j+1)))+... 
+                (dx^2*(Ts(i-1,j)+Ts(i+1,j))) + (egen*(dx^2 * dy^2)/k))) + Ts(i,j);
+        end 
+    end 
+
+    Ts = temps;
+
+B = reshape(temps,[1,n]);
+
+T(k,:) = B;
+end 
 
 function alpha = ThermalDiffusivity(rho, cp, k)
 alpha = k/(rho*cp);
