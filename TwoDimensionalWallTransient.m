@@ -18,7 +18,7 @@ dt = 0.0005; % size of steps
 timeSteps = 50; % number of steps
 
 %% Nodes (horizontal & vertical)
-dimension = [10 10]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(2); % Across
