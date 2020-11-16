@@ -55,16 +55,20 @@ Ts = 0.5*ones(size(TwoDNodes)); % very generic
 
 %% Populating the corners
 % Upper Left corner 
-temps(1) = 100; % generic for now, insert eq
+temps(1,1) = (alpha*dt/dx^2*dy^2)*(h1*dx^2*((Tinf1-T(1,1))/dy) + k*(T(2,1)-T(1,1)) + h3*dx*(Tinf2-T(1,1))...
+    + (k*dx^2*(T(1,2)-T(1,1))/dy^2) + egen*dx^2/2) + T(1,1); % generic for now, insert eq
 
 % Bottom Left corner 
-temps(end,1) = -100; % generic for now, insert eq    
+temps(end,1) = (alpha*dt/dx^2*dy^2)*(h1*dx^2*((Tinf1-T(end,1))/dy) + k*(T(end,2)-T(end,1)) + h4*dx*(Tinf2-T(end,1))...
+    + (k*dx^2*(T(end-1,1)-T(end,1))/dy^2) + egen*dx^2/2) + T(end,1); % generic for now, insert eq    
 
 % Upper Right corner
-temps(1,end) = 50; % generic for now, insert eq    
+temps(1,end) = (alpha*dt/dx^2*dy^2)*(h2*dx^2*((Tinf2-T(1,end))/dy) + k*(T(1,end-1)-T(1,end)) + h3*dx*(Tinf2-T(1,end))...
+    + (k*dx^2*(T(2,end)-T(1,end))/dy^2) + egen*dx^2/2) + T(1,end); % generic for now, insert eq    
 
 % Bottom Right corner 
-temps(end,end) = -50; % generic for now, insert eq     
+temps(end,end) = (alpha*dt/dx^2*dy^2)*(h2*dx^2*((Tinf2-T(end,end))/dy) + k*(T(end,end-1)-T(end,end)) + h4*dx*(Tinf2-T(1end,end))...
+    + (k*dx^2*(T(end-1,end)-T(end,end))/dy^2) + egen*dx^2/2) + T(end,end); % generic for now, insert eq     
 
 
 %% Populating the top and bottom
