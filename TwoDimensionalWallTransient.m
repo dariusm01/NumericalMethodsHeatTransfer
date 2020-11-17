@@ -17,6 +17,7 @@ alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
 dt = 0.0005; % size of steps
 timeSteps = 1000; % number of steps
 
+
 %% Nodes (horizontal & vertical)
 dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
@@ -42,14 +43,11 @@ TwoDNodes = NodeSystem(rows, cols);
 temps = zeros(size(TwoDNodes));
 Ts = Tinitial*ones(size(TwoDNodes)); % Initial
 
-%% Referring to Node system
-% Top = TwoDNodes(1,2:yNodes-1)
-% Bottom = TwoDNodes(end,2:yNodes-1)
-% Left side = TwoDNodes(2:xNodes-1,1)
-% Right Side = TwoDNodes(2:xNodes-1,end)
+
 for k = 2:timeSteps
     %% Populating the corners
     % Upper Left corner 
+
     temps(1,1) = ((((alpha*dt)/(dx^2))/dy)*((h1*dx^2*(Tinf1-Ts(1,1)))/dy + k*(Ts(1,2)-Ts(1,1)) + h3*dx*(Tinf2-Ts(1,1))...
         +k*dx^2*(Ts(2,1)-Ts(1,1))/dy^2 +egen*dx^2/2)) + Ts(1,1);  
 
@@ -104,22 +102,45 @@ for k = 2:timeSteps
              + dy*(Ts(end,j-1)+Ts(end,j+1)-2*Ts(end,j))/2 + egen*dx^2*dy/2*k) + Ts(end,j); % generic for now, insert eq
     end 
 
-    %% Interior Nodes
-    for i = 2:rows-1
-        for j = 2:cols-1
 
-            temps(i,j) = (((alpha*dt)/((dx^2)*(dy^2))) * ((-Ts(i,j)*(2*dy^2 + 2*dx^2)) + (dy^2*(Ts(i,j-1)+Ts(i,j+1)))+... 
-                (dx^2*(Ts(i-1,j)+Ts(i+1,j))) + (egen*(dx^2 * dy^2)/k))) + Ts(i,j);
+    
+
+          %% Interior Nodes
+            temps(i,j) = (dt*(dx*dy*egen + (dy*k*(Ts(i,j-1) - Ts(i,j)))/dx +...
+                         (dx*k*(Ts(i+1,j) - Ts(i,j)))/dy - (dx*k*(- Ts(i-1,j) +...
+                         Ts(i,j)))/dy - (dy*k*(- T(i,j+1) +...
+                         Ts(i,j)))/dx + (Ts(i,j)*cp*dx*dy*rho)/dt))/(cp*dx*dy*rho);
         end 
-    end 
-
+ 
+    
     Ts = temps;
 
-B = reshape(temps,[1,nodes]);
+    B = reshape(temps,[1,nodes]);
 
-T(k,:) = B;
-    end 
+
+    T(k,:) = B;
 end
+
+FinalTempsTransient2D = T;
+
+%% Plotting Temperature History of boundaries
+figure(1)
+% All rows, first column
+plot(FinalTempsTransient2D(:,1))
+grid on
+xlabel("Time steps")
+ylabel("Temperature °C")
+title("Temperature History of Combustion Chamber Boundary")
+
+figure(2)
+% All rows, last column
+plot(FinalTempsTransient2D(:,nodes))
+grid on
+xlabel("Time steps")
+ylabel("Temperature °C")
+title("Temperature History of Outside Boundary")
+
+
 
 function alpha = ThermalDiffusivity(rho, cp, k)
 alpha = k/(rho*cp);
@@ -177,3 +198,13 @@ function z = NodeSystem(rows, cols)
     z = Matrix;
     
 end 
+
+
+
+
+
+
+
+
+
+
