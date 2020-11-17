@@ -100,10 +100,7 @@ for k = 2:timeSteps
          %Bottom
          temps(end,j) = ((((alpha*dt)/(dx^2))/dy)*((h4*dx*dy*(Tinf2-Ts(end,j))/k)) + (dx^2*(Ts(end-1,j)-Ts(end,j))/dy)...
              + dy*(Ts(end,j-1)+Ts(end,j+1)-2*Ts(end,j))/2 + egen*dx^2*dy/2*k) + Ts(end,j); % generic for now, insert eq
-    end 
-
-
-    
+  
 
           %% Interior Nodes
             temps(i,j) = (dt*(dx*dy*egen + (dy*k*(Ts(i,j-1) - Ts(i,j)))/dx +...
@@ -111,7 +108,7 @@ for k = 2:timeSteps
                          Ts(i,j)))/dy - (dy*k*(- T(i,j+1) +...
                          Ts(i,j)))/dx + (Ts(i,j)*cp*dx*dy*rho)/dt))/(cp*dx*dy*rho);
         end 
- 
+    end
     
     Ts = temps;
 
