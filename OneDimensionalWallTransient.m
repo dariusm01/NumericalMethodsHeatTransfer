@@ -14,7 +14,7 @@ alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
 dt = 0.005; % size of steps
 tau = meshFourier(alpha, dt,dx); % mesh Fourier number
 criteria = 1-2*tau;
-timeSteps = 50000; % number of steps
+timeSteps = 70000; % number of steps
 
 %% Explicit Stability Criterion
 if  criteria < 0
