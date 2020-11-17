@@ -18,7 +18,7 @@ dt = 0.0005; % size of steps
 timeSteps = 50; % number of steps
 
 %% Nodes (horizontal & vertical)
-dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [5 5]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(2); % Across
@@ -70,22 +70,22 @@ for k = 2:timeSteps
         ((2*alpha*dt)/((dx^2)*(dy^2)));  
 
 
-    %% Populating the top and bottom
-    for i=2:rows-1
-        for j = 2:cols-1
-
-            % Top
-            if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
-                temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h3*dx*dy*(Tinf2-Ts(1,j))/k)) + (dx^2*(T(2,j)-T(1,j))/dy)...
-            + dy*(T(1,j-1)+T(1,j+1)-2*T(1,j))/2 + egen*dx^2*dy/2*k) + T(1,j); % generic for now, insert eq     
-
-            % Bottom    
-            elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
-                temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h4*dx*dy*(Tinf2-Ts(end,j))/k)) + (dx^2*(T(end-1,j)-T(end,j))/dy)...
-            + dy*(T(end,j-1)+T(end,j+1)-2*T(end,j))/2 + egen*dx^2*dy/2*k) + T(end,j); % generic for now, insert eq           
-            end 
-        end 
-    end 
+%     %% Populating the top and bottom
+%     for i=2:rows-1
+%         for j = 2:cols-1
+% 
+%             % Top
+%             if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
+%                 temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h3*dx*dy*(Tinf2-Ts(1,j))/k)) + (dx^2*(T(2,j)-T(1,j))/dy)...
+%             + dy*(T(1,j-1)+T(1,j+1)-2*T(1,j))/2 + egen*dx^2*dy/2*k) + T(1,j); % generic for now, insert eq     
+% 
+%             % Bottom    
+%             elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
+%                 temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h4*dx*dy*(Tinf2-Ts(end,j))/k)) + (dx^2*(T(end-1,j)-T(end,j))/dy)...
+%             + dy*(T(end,j-1)+T(end,j+1)-2*T(end,j))/2 + egen*dx^2*dy/2*k) + T(end,j); % generic for now, insert eq           
+%             end 
+%         end 
+%     end 
 
     %% Populating the sides
     for i = 2:rows-1
@@ -96,7 +96,15 @@ for k = 2:timeSteps
 
         % Right side
         temps(i,end) = ((((alpha*dt)/(dx^2))/dy)*((h2*dx^2*(Tinf2-Ts(i,end))/k)) + (dy*(T(i,end-1)-T(i,end)))...
-            + dx^2*(T(i-1,end)+T(i+1,end)-2*T(i,end))/2*dy + egen*dx^2*dy/2*k) + T(i,end); % generic for now, insert eq     
+            + dx^2*(T(i-1,end)+T(i+1,end)-2*T(i,end))/2*dy + egen*dx^2*dy/2*k) + T(i,end); % generic for now, insert eq    
+       
+        %Top
+        temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h3*dx*dy*(Tinf2-Ts(1,j))/k)) + (dx^2*(T(2,j)-T(1,j))/dy)...
+             + dy*(T(1,j-1)+T(1,j+1)-2*T(1,j))/2 + egen*dx^2*dy/2*k) + T(1,j); % generic for now, insert eq 
+         
+         %Bottom
+         temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h4*dx*dy*(Tinf2-Ts(end,j))/k)) + (dx^2*(T(end-1,j)-T(end,j))/dy)...
+             + dy*(T(end,j-1)+T(end,j+1)-2*T(end,j))/2 + egen*dx^2*dy/2*k) + T(end,j); % generic for now, insert eq
     end 
 
     %% Interior Nodes
