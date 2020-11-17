@@ -14,7 +14,7 @@ H = cm_to_m(30); % 30cm to m
 rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
-dt = 0.00000005; % size of steps
+dt = 0.00001; % size of steps
 timeSteps = 50000; % number of steps
 
 %% Nodes (horizontal & vertical)
@@ -92,16 +92,12 @@ for k = 2:timeSteps
                            (dy*k*(Ts(i,end-1) - Ts(i,end)))/dx - (dx*k*(- Ts(i-1,end) +...
                            Ts(i,end)))/dy - (dx*k*(- Ts(i+1,end) + Ts(i,end)))/dy +...
                            (0.5000*Ts(i,end)*cp*dx*dy*rho)/dt))/(cp*dx*dy*rho);   
-        end 
-    end 
 
-    %% Interior Nodes
-    for m = 2:rows-1
-        for n = 2:cols-1
-            temps(m,n) = (dt*(dx*dy*egen + (dy*k*(Ts(m,n-1) - Ts(m,n)))/dx +...
-                         (dx*k*(Ts(m+1,n) - Ts(m,n)))/dy - (dx*k*(- Ts(m-1,n) +...
-                         Ts(m,n)))/dy - (dy*k*(- T(m,n+1) +...
-                         Ts(m,n)))/dx + (Ts(m,n)*cp*dx*dy*rho)/dt))/(cp*dx*dy*rho);
+          %% Interior Nodes
+            temps(i,j) = (dt*(dx*dy*egen + (dy*k*(Ts(i,j-1) - Ts(i,j)))/dx +...
+                         (dx*k*(Ts(i+1,j) - Ts(i,j)))/dy - (dx*k*(- Ts(i-1,j) +...
+                         Ts(i,j)))/dy - (dy*k*(- T(i,j+1) +...
+                         Ts(i,j)))/dx + (Ts(i,j)*cp*dx*dy*rho)/dt))/(cp*dx*dy*rho);
         end 
     end
     
@@ -168,6 +164,7 @@ function z = NodeSystem(rows, cols)
     z = Matrix;
     
 end 
+
 
 
 
