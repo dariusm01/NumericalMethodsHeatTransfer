@@ -14,12 +14,12 @@ H = cm_to_m(30); % 30cm to m
 rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
-dt = 0.0005; % size of steps
+dt = 1e-5; % size of steps
 timeSteps = 1000; % number of steps
 
 
 %% Nodes (horizontal & vertical)
-dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [10 10]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(2); % Across
@@ -63,23 +63,6 @@ for k = 2:timeSteps
     temps(end,end) = ((((alpha*dt)/(dx^2))/dy)*((h2*dx^2*(Tinf2-Ts(end,end)))/dy + k*(Ts(end,end-1)-Ts(end,end)) + h4*dx*(Tinf2-Ts(end,end))...
         +k*dx^2*(Ts(end-1,end)-Ts(end,end))/dy^2 +egen*dx^2/2)) + Ts(end,end);  
 
-
-%     %% Populating the top and bottom
-%     for i=2:rows-1
-%         for j = 2:cols-1
-% 
-%             % Top
-%             if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
-%                 temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h3*dx*dy*(Tinf2-Ts(1,j))/k)) + (dx^2*(T(2,j)-T(1,j))/dy)...
-%             + dy*(T(1,j-1)+T(1,j+1)-2*T(1,j))/2 + egen*dx^2*dy/2*k) + T(1,j); % generic for now, insert eq     
-% 
-%             % Bottom    
-%             elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
-%                 temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h4*dx*dy*(Tinf2-Ts(end,j))/k)) + (dx^2*(T(end-1,j)-T(end,j))/dy)...
-%             + dy*(T(end,j-1)+T(end,j+1)-2*T(end,j))/2 + egen*dx^2*dy/2*k) + T(end,j); % generic for now, insert eq           
-%             end 
-%         end 
-%     end 
 
     %% Populating the sides
     for i = 2:rows-1
