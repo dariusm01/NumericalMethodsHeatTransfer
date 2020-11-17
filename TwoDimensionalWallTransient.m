@@ -15,7 +15,7 @@ rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
 dt = 0.0005; % size of steps
-timeSteps = 1000000; % number of steps
+timeSteps = 50; % number of steps
 
 %% Nodes (horizontal & vertical)
 dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
@@ -71,8 +71,8 @@ for k = 2:timeSteps
 
 
     %% Populating the top and bottom
-    for i=1:rows
-        for j = 1:cols
+    for i=2:rows-1
+        for j = 2:cols-1
 
             % Top
             if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
