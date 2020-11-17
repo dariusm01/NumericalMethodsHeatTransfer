@@ -115,6 +115,26 @@ for k = 2:timeSteps
     T(k,:) = B;
 end 
 
+FinalTempsTransient2D = T;
+
+%% Plotting Temperature History of boundaries
+figure(1)
+% All rows, first column
+plot(FinalTempsTransient2D(:,1))
+grid on
+xlabel("Time steps")
+ylabel("Temperature °C")
+title("Temperature History of Combustion Chamber Boundary")
+
+figure(2)
+% All rows, last column
+plot(FinalTempsTransient2D(:,nodes))
+grid on
+xlabel("Time steps")
+ylabel("Temperature °C")
+title("Temperature History of Outside Boundary")
+
+
 function alpha = ThermalDiffusivity(rho, cp, k)
 alpha = k/(rho*cp);
 end 
