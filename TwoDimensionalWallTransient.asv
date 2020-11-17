@@ -77,12 +77,12 @@ for k = 2:timeSteps
             % Top
             if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
                 temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h3*dx*dy*(Tinf2-Ts(1,j))/k)) + (dx^2*(T(2,j)-T(1,j))/dy)...
-            + dy*(T(1,j-1)+T(1,j+1)-2*T(1,j))/2 + egen*dx^2*dy/2*k) + T(1,j); % generic for now, insert eq     
+            + dy*(T(1,j-1)+T(1,j+1)-2T(1,j))/2 + egen*dx^2*dy/2*k) + T(1,j); % generic for now, insert eq     
 
             % Bottom    
             elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
                 temps(i,j) = ((((alpha*dt)/(dx^2))/dy)*((h4*dx*dy*(Tinf2-Ts(end,j))/k)) + (dx^2*(T(end-1,j)-T(end,j))/dy)...
-            + dy*(T(end,j-1)+T(end,j+1)-2*T(end,j))/2 + egen*dx^2*dy/2*k) + T(end,j); % generic for now, insert eq           
+            + dy*(T(1,j-1)+T(1,j+1)-2T(1,j))/2 + egen*dx^2*dy/2*k) + T(1,j); % generic for now, insert eq           
             end 
         end 
     end 
@@ -92,11 +92,11 @@ for k = 2:timeSteps
 
         % Left side
         temps(i,1) = ((((alpha*dt)/(dx^2))/dy)*((h1*dx^2*(Tinf1-Ts(i,1))/k)) + (dy*(T(i,2)-T(i,1)))...
-            + dx^2*(T(i-1,1)+T(i+1,1)-2*T(i,1))/2*dy + egen*dx^2*dy/2*k) + T(i,1); % generic for now, insert eq     
+            + dx^2*(T(i-1,1)+T(i+1,1)-2T(i,1))/2*dy + egen*dx^2*dy/2*k) + T(i,1); % generic for now, insert eq     
 
         % Right side
         temps(i,end) = ((((alpha*dt)/(dx^2))/dy)*((h2*dx^2*(Tinf2-Ts(i,end))/k)) + (dy*(T(i,end-1)-T(i,end)))...
-            + dx^2*(T(i-1,end)+T(i+1,end)-2*T(i,end))/2*dy + egen*dx^2*dy/2*k) + T(i,end); % generic for now, insert eq     
+            + dx^2*(T(i-1,end)+T(i+1,end)-2T(i,end))/2*dy + egen*dx^2*dy/2*k) + T(i,end); % generic for now, insert eq     
     end 
 
     %% Interior Nodes
