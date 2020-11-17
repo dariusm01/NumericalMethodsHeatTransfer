@@ -23,7 +23,7 @@ end
 
 %% Using the explicit approach
 T = zeros(timeSteps, n);
-Tinitial = 295; % k
+Tinitial =  KelvintoC(295); % 295k to °C
 T(1,:) = Tinitial; % setting the first row to the intial temp. These will get updated down the column
 
 for i = 2:timeSteps

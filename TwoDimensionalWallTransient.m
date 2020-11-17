@@ -14,43 +14,105 @@ H = cm_to_m(30); % 30cm to m
 rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
-dt = 0.005; % size of steps
-timeSteps = 50000; % number of steps
+dt = 0.0005; % size of steps
+timeSteps = 50; % number of steps
 
 %% Nodes (horizontal & vertical)
 dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
-xNodes = dimension(1); % Across
+xNodes = dimension(2); % Across
 dx = L/(xNodes - 1);
 
-yNodes = dimension(2); % Down
+yNodes = dimension(1); % Down
 dy = H/(yNodes - 1);
 
-% mesh Fourier number
-tau = meshFourier(alpha, dt, dx, dy); 
-criteria = 1-4*tau;
+rows = yNodes;
+cols = xNodes;
 
-%% Explicit Stability Criterion
-if  criteria < 0
-    warning("Will not converge, consider decreasing dt")
+
+%% Using the explicit approach
+n = rows*cols; % total number of nodes
+T = zeros(timeSteps, n);
+Tinitial =  KelvintoC(295); % 295k to °C
+T(1,:) = Tinitial; % setting the first row to the intial temp. These will get updated down the column
+
+
+TwoDNodes = NodeSystem(rows, cols);
+temps = zeros(size(TwoDNodes));
+Ts = 0.5*ones(size(TwoDNodes)); % very generic
+
+%% Referring to Node system
+% Top = TwoDNodes(1,2:yNodes-1)
+% Bottom = TwoDNodes(end,2:yNodes-1)
+% Left side = TwoDNodes(2:xNodes-1,1)
+% Right Side = TwoDNodes(2:xNodes-1,end)
+for k = 2:timeSteps
+    %% Populating the corners
+    % Upper Left corner 
+    temps(1,1) = Ts(1,1) + ((-Ts(1,1)*(dx^2 + dx^2 + (((h3*(dx^2)*dy) + (h1*(dy^2)*dx))/k))) + (dy^2*(Ts(1,2)))+...
+        (dx^2*(Ts(2,1))) + (((h3*(dx^2)*dy)/k)*Tinf3) + (((h1*(dy^2)*dx)/k)*Tinf1) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));  
+
+    % Bottom Left corner 
+    temps(end,1) = Ts(end,1) + ((-Ts(end,1)*(dx^2 + dx^2 + (((h4*(dx^2)*dy) + (h1*(dy^2)*dx))/k))) + (dy^2*(Ts(end,2)))+...
+        (dx^2*(Ts(end-1,1))) + (((h4*(dx^2)*dy)/k)*Tinf4) + (((h1*(dy^2)*dx)/k)*Tinf1) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2))); 
+
+    % Upper Right corner
+    temps(1,end) = Ts(1,end) + ((-Ts(1,end)*(dx^2 + dx^2 + (((h3*(dx^2)*dy) + (h2*(dy^2)*dx))/k))) + (dy^2*(Ts(1,end-1)))+...
+        (dx^2*(Ts(2,end))) + (((h3*(dx^2)*dy)/k)*Tinf3) + (((h2*(dy^2)*dx)/k)*Tinf2) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));
+
+    % Bottom Right corner 
+    temps(end,end) = Ts(end,end) + ((-Ts(end,end)*(dx^2 + dx^2 + (((h4*(dx^2)*dy) + (h2*(dy^2)*dx))/k))) + (dy^2*(Ts(end,end-1)))+...
+        (dx^2*(Ts(end-1,end))) + (((h4*(dx^2)*dy)/k)*Tinf4) + (((h2*(dy^2)*dx)/k)*Tinf2) + ((egen*(dx^2)*(dy^2))/(2*k)))*...
+        ((2*alpha*dt)/((dx^2)*(dy^2)));  
+
+
+    %% Populating the top and bottom
+    for i=1:rows
+        for j = 1:cols
+
+            % Top
+            if TwoDNodes(i,j) > TwoDNodes(1) && TwoDNodes(i,j) < TwoDNodes(1,end)
+                temps(i,j) = 5; % generic for now, insert eq     
+
+            % Bottom    
+            elseif TwoDNodes(i,j) > TwoDNodes(end,1) && TwoDNodes(i,j) < TwoDNodes(end,end)
+                temps(i,j) = 7; % generic for now, insert eq           
+            end 
+        end 
+    end 
+
+    %% Populating the sides
+    for i = 2:rows-1
+
+        % Left side
+        temps(i,1) = 9; % generic for now, insert eq     
+
+        % Right side
+        temps(i,end) = 11; % generic for now, insert eq     
+    end 
+
+    %% Interior Nodes
+    for i = 2:rows-1
+        for j = 2:cols-1
+
+            temps(i,j) = (((alpha*dt)/((dx^2)*(dy^2))) * ((-Ts(i,j)*(2*dy^2 + 2*dx^2)) + (dy^2*(Ts(i,j-1)+Ts(i,j+1)))+... 
+                (dx^2*(Ts(i-1,j)+Ts(i+1,j))) + (egen*(dx^2 * dy^2)/k))) + Ts(i,j);
+        end 
+    end 
+
+    Ts = temps;
+
+B = reshape(temps,[1,n]);
+
+T(k,:) = B;
 end 
-
-
-
-% Interior Nodes
-% T(i,j) = (tau*((dy^2*(T(i-1,j-1) +...
-%          T(i-1,j+1))) - (2*T(i-1,j)*(dy^2+dx^2)) +...
-%         (dx^2*(T(i-1,j) + T(i-2,j))) + (egen*(dx*dy))/k)) + T(i-2,j);
-
-
 
 function alpha = ThermalDiffusivity(rho, cp, k)
 alpha = k/(rho*cp);
-end 
-
-function tau = meshFourier(alpha, dt, dx, dy)
-tau = (alpha*dt)/(dx*dy);
 end 
 
 function x = Interpolation(y2, y1, x2, x1, YourVal)
@@ -66,4 +128,42 @@ end
 
 function y = cm_to_m(x)
 y = x/100;
+end 
+
+function z = NodeSystem(rows, cols)
+
+    Matrix = zeros(rows,cols);
+    
+    % Top 
+    for i = 1:cols
+        Matrix(1,i) = i; 
+    end 
+
+    % Bottom 
+    for i = 1:cols
+        Matrix(end,i) = cols + i;
+    end 
+
+    % Left Side
+    for i = 2:rows-1
+        Matrix(i,1) = 2*cols + (i-1);
+    end 
+
+    % Right Side
+    for i = 2:rows-1
+        Matrix(i,end) = 2*cols + (rows-3) + i;
+    end 
+
+    A = 1;
+    
+    % Inside
+    for i=2:rows-1
+        for j=2:cols -1
+            Matrix(i,j) = (2*cols)+ (2*(rows-2))  + A;
+            A = A+1;
+        end 
+    end 
+    
+    z = Matrix;
+    
 end 
