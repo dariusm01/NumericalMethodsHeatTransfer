@@ -102,7 +102,7 @@ y = 0:dy:H;
 %% Plotting
 figure(1)
 contourf(x,y,FinalTempsSteadyState2D);
-title("2D Dimensional Steady State Temperatures Contour")
+title("2D Dimensional Steady State Temperatures (Contour)")
 xlabel("Length (m)")
 ylabel("Height (m)")
 c = colorbar;
@@ -110,7 +110,7 @@ c.Label.String = "Temperatures °C";
 
 figure(2)
 mesh(x,y,FinalTempsSteadyState2D);
-title("2D Dimensional Steady State Temperatures Mesh")
+title("2D Dimensional Steady State Temperatures (Mesh)")
 xlabel("Length (m)")
 ylabel("Height (m)")
 c = colorbar;
