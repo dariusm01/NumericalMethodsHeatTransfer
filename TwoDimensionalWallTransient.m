@@ -14,8 +14,8 @@ H = cm_to_m(30); % 30cm to m
 rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
-dt = 1e-3; % size of steps
-timeSteps = 1000; % number of steps
+dt = 1e-2; % size of steps
+timeSteps = 50000; % number of steps
 
 
 %% Nodes (horizontal & vertical)
@@ -83,21 +83,24 @@ for k = 2:timeSteps
         for j = 2:cols-1
 
         % Left side
-        temps(i,1) = ((((alpha*dt)/(dx^2))/dy)*((h1*dx^2*(Tinf1-Ts(i,1))/k)) + (dy*(Ts(i,2)-Ts(i,1)))...
-            + dx^2*(Ts(i-1,1)+Ts(i+1,1)-2*Ts(i,1))/2*dy + egen*dx^2*dy/2*k) + Ts(i,1); % generic for now, insert eq     
+        temps(i,1) =  (2*tauX*(Ts(i,2)-Ts(i,1))) + (2*tauY*(Ts(i-1,1)-Ts(i,1)))+...
+            (2*tauY*(Ts(i+1,1)-Ts(i,end))) + (((h1*dt)/(rho*cp*dx))*(Tinf1-Ts(i,1))) +...
+            ((egen*dt)/(rho*cp)) + Ts(i,1);
 
         % Right side
-        temps(i,end) = ((((alpha*dt)/(dx^2))/dy)*((h2*dx^2*(Tinf2-Ts(i,end))/k)) + (dy*(Ts(i,end-1)-Ts(i,end)))...
-            + dx^2*(Ts(i-1,end)+Ts(i+1,end)-2*Ts(i,end))/2*dy + egen*dx^2*dy/2*k) + Ts(i,end); % generic for now, insert eq    
+        temps(i,end) = (2*tauX*(Ts(i,end-1)-Ts(i,end))) + (2*tauY*(Ts(i-1,end)-Ts(i,end)))+...
+            (2*tauY*(Ts(i+1,end)-Ts(i,end))) + (((h2*dt)/(rho*cp*dx))*(Tinf2-Ts(i,end))) +...
+            ((egen*dt)/(rho*cp)) + Ts(i,end);
        
         %Top
-        temps(1,j) = ((((alpha*dt)/(dx^2))/dy)*((h3*dx*dy*(Tinf2-Ts(1,j))/k)) + (dx^2*(Ts(2,j)-Ts(1,j))/dy)...
-             + dy*(Ts(1,j-1)+Ts(1,j+1)-2*Ts(1,j))/2 + egen*dx^2*dy/2*k) + Ts(1,j); % generic for now, insert eq 
-         
-         %Bottom
-         temps(end,j) = ((((alpha*dt)/(dx^2))/dy)*((h4*dx*dy*(Tinf2-Ts(end,j))/k)) + (dx^2*(Ts(end-1,j)-Ts(end,j))/dy)...
-             + dy*(Ts(end,j-1)+Ts(end,j+1)-2*Ts(end,j))/2 + egen*dx^2*dy/2*k) + Ts(end,j); % generic for now, insert eq
-  
+        temps(1,j) = (2*tauY*(Ts(2,j)-Ts(1,j))) + (2*tauX*(Ts(1,j-1)-Ts(1,j)))+...
+            (2*tauX*(Ts(1,j+1)-Ts(1,j))) + (((h3*dt)/(rho*cp*dx))*(Tinf3-Ts(1,j))) +...
+            ((egen*dt)/(rho*cp)) + Ts(1,j);
+        
+        %Bottom
+        temps(end,j) = (2*tauY*(Ts(end-1,j)-Ts(end,j))) + (2*tauX*(Ts(end,j-1)-Ts(end,j)))+...
+            (2*tauX*(Ts(end,j+1)-Ts(end,j))) + (((h4*dt)/(rho*cp*dx))*(Tinf4-Ts(end,j))) +...
+            ((egen*dt)/(rho*cp)) + Ts(end,j);
 
           %% Interior Nodes
             temps(i,j) = (-Ts(i,j)*(2*tauX + 2*tauY - 1)) + tauX*(Ts(i,j-1) + Ts(i,j+1))+...
