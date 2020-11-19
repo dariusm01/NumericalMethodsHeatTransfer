@@ -15,11 +15,11 @@ rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
 dt = 1e-2; % size of steps
-timeSteps = 50000; % number of steps
+timeSteps = 750000; % number of steps
 
 
 %% Nodes (horizontal & vertical)
-dimension = [10 10]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(2); % Across
