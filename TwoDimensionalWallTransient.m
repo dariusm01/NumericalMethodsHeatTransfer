@@ -14,7 +14,7 @@ H = cm_to_m(30); % 30cm to m
 rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
-dt = 1e-5; % size of steps
+dt = 1e-3; % size of steps
 timeSteps = 1000; % number of steps
 
 
@@ -32,6 +32,16 @@ rows = yNodes;
 cols = xNodes;
 
 
+%% Explicit Stability Criterion
+tauX = meshFourier(alpha, dt, dx);
+tauY = meshFourier(alpha, dt, dy);
+criteriaX = 1-4*tauX;
+criteriaY = 1-4*tauY;
+
+if  criteriaX < 0 || criteriaY < 0
+    warning("Will not converge, consider decreasing dt")
+end 
+
 %% Using the explicit approach
 nodes = rows*cols; % total number of nodes
 T = zeros(timeSteps, nodes);
@@ -46,22 +56,26 @@ Ts = Tinitial*ones(size(TwoDNodes)); % Initial
 
 for k = 2:timeSteps
     %% Populating the corners
+    
     % Upper Left corner 
-
-    temps(1,1) = ((((alpha*dt)/(dx^2))/dy)*((h1*dx^2*(Tinf1-Ts(1,1)))/dy + k*(Ts(1,2)-Ts(1,1)) + h3*dx*(Tinf2-Ts(1,1))...
-        +k*dx^2*(Ts(2,1)-Ts(1,1))/dy^2 +egen*dx^2/2)) + Ts(1,1);  
+    temps(1,1) = (2*tauX*(Ts(1,2)-Ts(1,1))) + (2*tauY*(Ts(2,1)-Ts(1,1)))+...
+        (((2*h3*dt)/(rho*cp*dy))*(Tinf3-Ts(1,1))) + (((2*h1*dt)/(rho*cp*dx))*(Tinf1-Ts(1,1)))+...
+        ((egen*dt)/(rho*cp)) + Ts(1,1); 
 
     % Bottom Left corner 
-    temps(end,1) = ((((alpha*dt)/(dx^2))/dy)*((h1*dx^2*(Tinf1-Ts(end,1)))/dy + k*(Ts(end,2)-Ts(end,1)) + h4*dx*(Tinf2-Ts(end,1))...
-        +k*dx^2*(Ts(end-1,1)-Ts(end,1))/dy^2 +egen*dx^2/2)) + Ts(end,1); 
+    temps(end,1) = (2*tauX*(Ts(end,2)-Ts(end,1))) + (2*tauY*(Ts(end-1,1)-Ts(end,1)))+...
+        (((2*h4*dt)/(rho*cp*dy))*(Tinf4-Ts(end,1))) + (((2*h1*dt)/(rho*cp*dx))*(Tinf1-Ts(end,1)))+...
+        ((egen*dt)/(rho*cp)) + Ts(end,1);
 
     % Upper Right corner
-    temps(1,end) = ((((alpha*dt)/(dx^2))/dy)*((h2*dx^2*(Tinf2-Ts(1,end)))/dy + k*(Ts(1,end-1)-Ts(1,end)) + h3*dx*(Tinf2-Ts(1,end))...
-        +k*dx^2*(Ts(2,end)-Ts(1,end))/dy^2 +egen*dx^2/2)) + Ts(1,end);
+    temps(1,end) = (2*tauX*(Ts(1,end-1)-Ts(1,end))) + (2*tauY*(Ts(2,end)-Ts(1,end)))+...
+        (((2*h3*dt)/(rho*cp*dy))*(Tinf3-Ts(1,end))) + (((2*h2*dt)/(rho*cp*dx))*(Tinf2-Ts(1,end)))+...
+        ((egen*dt)/(rho*cp)) + Ts(1,end);
 
     % Bottom Right corner 
-    temps(end,end) = ((((alpha*dt)/(dx^2))/dy)*((h2*dx^2*(Tinf2-Ts(end,end)))/dy + k*(Ts(end,end-1)-Ts(end,end)) + h4*dx*(Tinf2-Ts(end,end))...
-        +k*dx^2*(Ts(end-1,end)-Ts(end,end))/dy^2 +egen*dx^2/2)) + Ts(end,end);  
+    temps(end,end) = (2*tauX*(Ts(end,end-1)-Ts(end,end))) + (2*tauY*(Ts(end-1,end)-Ts(end,end)))+...
+        (((2*h4*dt)/(rho*cp*dy))*(Tinf4-Ts(end,end))) + (((2*h2*dt)/(rho*cp*dx))*(Tinf2-Ts(end,end)))+...
+        ((egen*dt)/(rho*cp)) + Ts(end,end);
 
 
     %% Populating the sides
@@ -86,10 +100,8 @@ for k = 2:timeSteps
   
 
           %% Interior Nodes
-            temps(i,j) = (dt*(dx*dy*egen + (dy*k*(Ts(i,j-1) - Ts(i,j)))/dx +...
-                         (dx*k*(Ts(i+1,j) - Ts(i,j)))/dy - (dx*k*(- Ts(i-1,j) +...
-                         Ts(i,j)))/dy - (dy*k*(- T(i,j+1) +...
-                         Ts(i,j)))/dx + (Ts(i,j)*cp*dx*dy*rho)/dt))/(cp*dx*dy*rho);
+            temps(i,j) = (-Ts(i,j)*(2*tauX + 2*tauY - 1)) + tauX*(Ts(i,j-1) + Ts(i,j+1))+...
+                tauY*(Ts(i+1,j) + Ts(i-1,j)) + ((alpha*dt*egen)/k);
         end 
     end
     
@@ -180,7 +192,9 @@ function z = NodeSystem(rows, cols)
 end 
 
 
-
+function tau = meshFourier(alpha, dt, dx)
+tau = (alpha*dt)/(dx^2);
+end 
 
 
 
