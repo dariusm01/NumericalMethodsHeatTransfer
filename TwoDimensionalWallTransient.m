@@ -48,10 +48,12 @@ T = zeros(timeSteps, nodes);
 Tinitial =  KelvintoC(295); % 295k to °C
 T(1,:) = Tinitial; % setting the first row to the intial temp. These will get updated down the column
 
-
+%% If you want to see how the nodes are laid out
 TwoDNodes = NodeSystem(rows, cols);
-temps = zeros(size(TwoDNodes));
-Ts = Tinitial*ones(size(TwoDNodes)); % Initial
+
+%% Creating array for temperatures
+temps = zeros(size(TwoDNodes)); % 'current'
+Ts = Tinitial*ones(size(TwoDNodes)); % 'old'
 
 
 for k = 2:timeSteps
