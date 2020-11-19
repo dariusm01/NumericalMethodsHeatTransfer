@@ -14,7 +14,7 @@ H = cm_to_m(30); % 30cm to m
 rho = 7900; % kg/m^3
 cp = Interpolation(300, 200, 477, 402, 295); % J/kg*k
 alpha = ThermalDiffusivity(rho, cp, k); % m^2/s
-dt = 1e-2; % size of steps
+dt = 1e-3; % size of steps
 timeSteps = 750000; % number of steps
 
 
