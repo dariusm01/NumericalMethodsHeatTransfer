@@ -35,11 +35,11 @@ while iter < iterLimit
     iter = iter + 1; 
 end 
 
-FinalTempsSteadyState = temps;
+FinalTempsSteadyState1D = temps;
 
 %% Plotting
 figure(1)
-plot(x,FinalTempsSteadyState)
+plot(x,FinalTempsSteadyState1D)
 grid on
 title("1 Dimensional Steady State Temperatures")
 xlabel("Length (m)")

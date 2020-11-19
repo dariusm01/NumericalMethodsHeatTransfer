@@ -39,12 +39,12 @@ for i = 2:timeSteps
     T(i,n) = ((criteria - 2*tau*(h2*dx/k))*T(i-1,n)) + (2*tau*T(i-1,n-1)) + (2*tau*((h2*dx)/k)*Tinf2) + (tau*egen*dx^2)/k;
 end 
 
-FinalTempsTransient = T;
+FinalTempsTransient1D = T;
 
 %% Plotting Temperature History of boundaries
 figure(1)
 % All rows, first column
-plot(FinalTempsTransient(:,1))
+plot(FinalTempsTransient1D(:,1))
 grid on
 xlabel("Time steps")
 ylabel("Temperature °C")
@@ -52,7 +52,7 @@ title("Temperature History of Combustion Chamber Boundary")
 
 figure(2)
 % All rows, last column
-plot(FinalTempsTransient(:,n))
+plot(FinalTempsTransient1D(:,n))
 grid on
 xlabel("Time steps")
 ylabel("Temperature °C")
