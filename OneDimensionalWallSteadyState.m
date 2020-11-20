@@ -1,3 +1,6 @@
+%% Adding the functions to the filepath
+addpath('ProjectFunctions')
+
 %% Defining paramters
 k = Interpolation(300, 200, 14.9, 12.6, 295); % W/mk
 egen = 0; % W/m^3
