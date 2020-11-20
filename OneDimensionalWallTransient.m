@@ -58,25 +58,3 @@ xlabel("Time steps")
 ylabel("Temperature °C")
 title("Temperature History of Outside Boundary")
 
-function alpha = ThermalDiffusivity(rho, cp, k)
-alpha = k/(rho*cp);
-end 
-
-function tau = meshFourier(alpha, dt,dx)
-tau = (alpha*dt)/(dx^2);
-end 
-
-function x = Interpolation(y2, y1, x2, x1, YourVal)
-
-m = (y2-y1)/(x2-x1);
-
-x = ((YourVal - y1)/m) + x1;
-end 
-
-function T = KelvintoC(x)
-T = x-273.15;
-end 
-
-function y = cm_to_m(x)
-y = x/100;
-end 
