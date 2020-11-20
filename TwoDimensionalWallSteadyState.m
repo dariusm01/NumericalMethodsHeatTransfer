@@ -55,7 +55,6 @@ while iter < iterLimit
         (k*(dx^2)*T(end-1,end)) + (h2*(dy^2)*dx*Tinf2)+...
         ((egen/2)*dx^2*dy^2))/((h4*dy*(dx^2)) + k*dx^2 + k*dy^2 + (h2*(dy^2)*dx));
 
-    %% Sides
     for m = 2:yNodes-1 % y is the rows 
         for n = 2:xNodes-1  % x is the cols
             
@@ -78,14 +77,11 @@ while iter < iterLimit
         temps(m,end) = ((2*h2*(dy^2)*dx*Tinf2) + (k*(dx^2)*(T(m-1,n) + T(m+1,n))) +...
             (2*k*(dy^2)*T(m,n-1)) + (egen*(dx^2)*(dy^2)))/((2*h2*(dy^2)*dx) + (2*k*(dx^2)) +...
             (2*k*(dy^2)));
-        end 
-    end 
     
-    %% Interior nodes    
-    for i = 2:yNodes-1
-        for j = 2:xNodes-1 
-        temps(i,j) = ((k*dy^2*(T(i,j+1)+T(i,j-1))) + (k*dx^2*(T(i+1,j)+T(i-1,j))) +...
+        % Interior Nodes
+        temps(m,n) = ((k*dy^2*(T(m,n+1)+T(m,n-1))) + (k*dx^2*(T(m+1,n)+T(m-1,n))) +...
             (egen*(dx^2)*(dy^2)))/(k*(2*dy^2 +2*dx^2));
+
         end 
     end 
     
