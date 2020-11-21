@@ -1,6 +1,7 @@
 %% Adding the functions to the filepath
 addpath('ProjectFunctions')
 
+%% Setting Up the nodes
 A = zeros(50,25);
 b = size(A);
 
@@ -15,6 +16,7 @@ Remaining = 1-(TopRecArea+BottomRecArea);
 CenterRec = floor(b(1)*Remaining); % 55% of 50
 
 CoolantArea = floor((TopRec+CenterRec));
+
 %% Columns
 LeftRecAcross = Percent(20); % the left rectangle makes up 20 of the cols
 LeftRec = b(2)*LeftRecAcross;
@@ -54,17 +56,52 @@ for i = CoolantArea:(CoolantArea+BottomRec)
 end 
 
 
-%% Outer Corners
-A(1,1) = 987;
-A(1,end) = 987;
-A(end,1) = 987;
-A(end,end) = 987;
+T = zeros(size(A));
 
-%% Inner Corners
-A(TopRec,LeftRec+1) = 855;
-A(TopRec,end) = 855;
-A(CoolantArea-1,LeftRec+1) = 855;
-A(CoolantArea-1,end) = 855;
+%% Defining paramters
+k = Interpolation(300, 200, 14.9, 12.6, 295); % W/mk
+egen = 0; % W/m^3
+h = 360; % W/m^2k Air
+h_cool = 8800; % W/m^2k Coolant Channel
+h_comb = 2350; % W/m^2k Combustion Chamber
+Tinf1 = KelvintoC(295); % 295k to °C (Air)
+Tinf2 = KelvintoC(183); % 183k to °C (Coolant Channel)
+Tinf3 = KelvintoC(3350); % 3350k to °C (Combustion Chamber)
+
+%% Iterative Method
+iter = 0; % iteration counter
+iterLimit = 10000000;
+
+while iter < iterLimit
+    %% Outer Corners
+    
+    % Top Left Corner
+    T(1,1) = ((((2*k)/(dx^2)) + ((2*k)/(dy^2)) + ((2*h)/(dy)))^-1) * ((((2*k)/(dx^2))*A(1,2))...
+        + (((2*k)/(dy^2))*A(2,1)) + (((2*h)/(dy))*Tinf1) + egen);
+    
+    % Top Right Corner
+    T(1,end) = ((((2*k)/(dx^2)) + ((2*k)/(dy^2)) + ((2*h)/(dy)))^-1) * ((((2*k)/(dx^2))*A(1,end-1))...
+        + (((2*k)/(dy^2))*A(2,end)) + (((2*h)/(dy))*Tinf1) + egen);
+    
+    % Bottom Left Corner
+    T(end,1) = ((((2*k)/(dx^2)) + ((2*k)/(dy^2)) + ((2*h_comb)/(dy)))^-1) * ((((2*k)/(dx^2))*A(end,2))...
+        + (((2*k)/(dy^2))*A(end-1,1)) + (((2*h_comb)/(dy))*Tinf3) + egen);
+    
+    % Bottom Right Corner
+    T(end,end) = ((((2*k)/(dx^2)) + ((2*k)/(dy^2)) + ((2*h_comb)/(dy)))^-1) * ((((2*k)/(dx^2))*A(end,end-1))...
+        + (((2*k)/(dy^2))*A(end-1,end)) + (((2*h_comb)/(dy))*Tinf3) + egen);
+    
+    %% Inner Corners
+    T(TopRec,LeftRec+1) = 855;
+    T(TopRec,end) = 855;
+    T(CoolantArea-1,LeftRec+1) = 855;
+    T(CoolantArea-1,end) = 855;
+
+    
+    A = T;
+    iter = iter + 1; 
+end 
+
 
 function A = Percent(B)
 A = B/100;
