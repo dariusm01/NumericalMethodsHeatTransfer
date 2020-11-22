@@ -15,10 +15,10 @@ Tinf4 = Tinf2;
 L = cm_to_m(1); % 1cm to m 
 H = cm_to_m(30); % 30cm to m 
 iter = 0; % iteration counter
-iterLimit = 10000000;
+iterLimit = 1000000;
 
 %% Nodes (horizontal & vertical)
-dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [10 10]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(1); % Across
