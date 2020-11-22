@@ -125,27 +125,23 @@ while iter < iterLimit
     %% Inner Corners
     
     % Inner top left corner
-    T(TopRec,LeftRec+1) = (((4*k)/(dy^2)) + ((2*h_cool)/dy) + ((2*k)/(dx^2)))^-1 * (((4*k)/(dy^2)*A(TopRec,LeftRec)) +...
-        (((2*h_cool)/dy)*Tinf2) + (k/(dx^2))*(A(TopRec,LeftRec) + A(TopRec,LeftRec+2)) + (3*egen));
+    T(TopRec,LeftRec+1) = (((4*k)/(dy_topRec^2)) + ((2*h_cool)/dy_topRec) + ((2*k)/(dx_topRec^2)))^-1 * (((4*k)/(dy_topRec^2)*A(TopRec,LeftRec)) +...
+        (((2*h_cool)/dy_topRec)*Tinf2) + (k/(dx_topRec^2))*(A(TopRec,LeftRec) + A(TopRec,LeftRec+2)) + (3*egen));
     
     % Inner top right corner
-    T(TopRec,end) = (((2*k)/(dy^2)) + ((2*h_cool)/dy) + ((2*k)/(dx^2)))^-1 * (((2*k)/(dy^2)*A(TopRec,end-1)) +...
-        (((2*h_cool)/dy)*Tinf2) + ((2*k)/(dx^2))*(A(TopRec,end-1)) + (egen));
+    T(TopRec,end) = (((2*k)/(dy_topRec^2)) + ((2*h_cool)/dy_topRec) + ((2*k)/(dx_topRec^2)))^-1 * (((2*k)/(dy_topRec^2)*A(TopRec,end-1)) +...
+        (((2*h_cool)/dy_topRec)*Tinf2) + ((2*k)/(dx_topRec^2))*(A(TopRec,end-1)) + (egen));
     
     % Inner bottom left corner
-    T(CoolantArea-1,LeftRec+1) = (((4*k)/(dy^2)) + ((2*h_cool)/dy) + ((2*k)/(dx^2)))^-1 * (((4*k)/(dy^2)*A(CoolantArea,LeftRec+1)) +...
-        (((2*h_cool)/dy)*Tinf2) + (k/(dx^2))*(A(CoolantArea-1,LeftRec) + A(CoolantArea+1,LeftRec+2)) + (3*egen));
+    T(CoolantArea-1,LeftRec+1) = (((4*k)/(dy_bottomRec^2)) + ((2*h_cool)/dy_bottomRec) + ((2*k)/(dx_bottomRec^2)))^-1 * (((4*k)/(dy_bottomRec^2)*A(CoolantArea,LeftRec+1)) +...
+        (((2*h_cool)/dy_bottomRec)*Tinf2) + (k/(dx_bottomRec^2))*(A(CoolantArea-1,LeftRec) + A(CoolantArea+1,LeftRec+2)) + (3*egen));
     
     % Inner bottom right corner
-    T(CoolantArea-1,end) = (((2*k)/(dy^2)) + ((2*h_cool)/dy) + ((2*k)/(dx^2)))^-1 * (((2*k)/(dy^2)*A(CoolantArea,end)) +...
-        (((2*h_cool)/dy)*Tinf2) + ((2*k)/(dx^2))*(A(CoolantArea-1,end-1)) + (egen));
+    T(CoolantArea-1,end) = (((2*k)/(dy_bottomRec^2)) + ((2*h_cool)/dy_bottomRec) + ((2*k)/(dy_bottomRec^2)))^-1 * (((2*k)/(dy_bottomRec^2)*A(CoolantArea,end)) +...
+        (((2*h_cool)/dy_bottomRec)*Tinf2) + ((2*k)/(dx_bottomRec^2))*(A(CoolantArea-1,end-1)) + (egen));
 
     
     A = T;
     iter = iter + 1; 
 end 
 
-
-function A = Percent(B)
-A = B/100;
-end 
