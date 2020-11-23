@@ -72,7 +72,7 @@ dy_leftRec = LeftRecHeight/(dimension(1)-1);
 
 %% Iterative Method
 iter = 0; % iteration counter
-iterLimit = 1000;
+iterLimit = 10000;
 
 while iter < iterLimit
     %% Outer Corners
