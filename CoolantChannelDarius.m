@@ -214,15 +214,11 @@ FinalTempsCoolantChannel = T;
 figure(1)
 contourf(FinalTempsCoolantChannel);
 title("Coolant Channel Steady State Temperatures (Contour)")
-xlabel("Length (m)")
-ylabel("Height (m)")
 c = colorbar;
 c.Label.String = "Temperatures °C";
 
 figure(2)
 mesh(FinalTempsCoolantChannel);
 title("Coolant Channel Steady State Temperatures (Mesh)")
-xlabel("Length (m)")
-ylabel("Height (m)")
 c = colorbar;
 c.Label.String = "Temperatures °C";
