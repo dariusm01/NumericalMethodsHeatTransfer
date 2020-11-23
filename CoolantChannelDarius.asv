@@ -29,6 +29,35 @@ RemainingCols = dimension(2)*RemainingAcross;
 rows = dimension(1);
 cols = dimension(2);
 
+%% Top Rectangle
+for i = 1:TopRec
+    for j = LeftRec+1:cols
+        A(i,j) = 55;
+    end 
+end 
+
+%% Left Rectangle
+for i = 1:rows
+    for j = 1:LeftRec
+        A(i,j) = 23;
+    end 
+end 
+
+%% Center Rec (Coolant Channel)
+for i = TopRec:CoolantArea
+    for j = LeftRec+1:cols
+        A(i,j) = 183;
+    end 
+end 
+
+
+%% Bottom Rec 
+for i = CoolantArea:(CoolantArea+BottomRec)
+    for j = LeftRec+1:cols
+        A(i,j) = 97;
+    end 
+end 
+
 
 T = zeros(size(A));
 
@@ -189,8 +218,8 @@ while iter < iterLimit
     % Left Rectangle
     for m = rows
         for n = 2:LeftRec-1
-        T(rows,n) = ((2*h_comb*(dx_leftRec^2)*dy_leftRec*Tinf3) + (k*(dy_leftRec^2)*(A(m,n-1) + A(m,n+1))) +...
-            (2*k*(dx_leftRec^2)*A(m-1,n)) + (egen*(dx_leftRec^2)*(dy_leftRec^2)))/((2*h_comb*(dx_leftRec^2)*dy_leftRec) + (2*k*(dx_leftRec^2)) +...
+        T(rows,n) = ((2*h_comb*(dx_leftRec^2)*dy_leftRec*Tinf3) + (k*(dy_leftRec^2)*(T(m,n-1) + T(m,n+1))) +...
+            (2*k*(dx_leftRec^2)*T(m-1,n)) + (egen*(dx_leftRec^2)*(dy_leftRec^2)))/((2*h_comb*(dx_leftRe^2)*dy_leftRec) + (2*k*(dx_leftRec^2)) +...
             (2*k*(dx_leftRec^2)));
         end 
     end 
@@ -198,9 +227,9 @@ while iter < iterLimit
     % Bottom Rec 
     for m = rows
         for n = LeftRec:cols-1
-            T(rows,n) = ((2*h_comb*(dx_bottomRec^2)*dy_bottomRec*Tinf3) + (k*(dy_bottomRec^2)*(A(m,n-1) + A(m,n+1))) +...
-            (2*k*(dx_bottomRec^2)*A(m-1,n)) + (egen*(dx_bottomRec^2)*(dy_bottomRec^2)))/((2*h_comb*(dx_bottomRec^2)*dy_bottomRec) + (2*k*(dy_bottomRec^2)) +...
-            (2*k*(dx_bottomRec^2)));
+            T(rows,n) = ((2*h_comb*(dx_bottomRec^2)*dy_bottomRec*Tinf3) + (k*(dy_bottomRec^2)*(T(m,n-1) + T(m,n+1))) +...
+            (2*k*(dx_bottomRec^2)*T(m-1,n)) + (egen*(dx_bottomRec^2)*(dy_bottomRec^2)))/((2*h*(dx^2)*dy) + (2*k*(dy^2)) +...
+            (2*k*(dx^2)));
         end 
     end 
         
