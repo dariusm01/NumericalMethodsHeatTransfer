@@ -72,7 +72,7 @@ dy_leftRec = LeftRecHeight/(dimension(1)-1);
 
 %% Iterative Method
 iter = 0; % iteration counter
-iterLimit = 10000;
+iterLimit = 1000;
 
 while iter < iterLimit
     %% Outer Corners
@@ -214,15 +214,11 @@ FinalTempsCoolantChannel = T;
 figure(1)
 contourf(FinalTempsCoolantChannel);
 title("Coolant Channel Steady State Temperatures (Contour)")
-xlabel("Length (m)")
-ylabel("Height (m)")
 c = colorbar;
 c.Label.String = "Temperatures °C";
 
 figure(2)
 mesh(FinalTempsCoolantChannel);
 title("Coolant Channel Steady State Temperatures (Mesh)")
-xlabel("Length (m)")
-ylabel("Height (m)")
 c = colorbar;
 c.Label.String = "Temperatures °C";
