@@ -18,7 +18,7 @@ iter = 0; % iteration counter
 iterLimit = 1000000;
 
 %% Nodes (horizontal & vertical)
-dimension = [10 10]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [3 3]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 
 xNodes = dimension(1); % Across
