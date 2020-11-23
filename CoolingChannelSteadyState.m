@@ -138,7 +138,7 @@ x = 0:dx:L;
 y = 0:dy:H;
 
 %% Plotting
-figure(1)
+subplot(1,2,1)
 contourf(x,y,FinalTempsCoolingChannel2D);
 title("Coolant Channel Steady State Temperatures (Contour)")
 xlabel("Length (m)")
@@ -146,7 +146,7 @@ ylabel("Height (m)")
 c = colorbar;
 c.Label.String = "Temperatures °C";
 
-figure(2)
+subplot(1,2,2)
 mesh(x,y,FinalTempsCoolingChannel2D);
 title("Coolant Channel Steady State Temperatures (Mesh)")
 xlabel("Length (m)")
