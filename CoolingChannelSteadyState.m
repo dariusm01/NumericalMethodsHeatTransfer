@@ -14,7 +14,7 @@ iter = 0; % iteration counter
 iterLimit = 10000000;
 
 %% Nodes (horizontal & vertical)
-dimension = [4 8]; % any # of nodes (x-direction) & nodes (y-direction)
+dimension = [6 8]; % any # of nodes (x-direction) & nodes (y-direction)
 % similar to a coordinate (x,y)
 % set to 4 x 8 for now to fit my diagram and the given dimensions
 
@@ -132,13 +132,13 @@ while iter < iterLimit
     
 end 
 
-FinalTempsCoolingChannel2D = temps
+FinalTempsCoolingChannel2D = temps;
 
 x = 0:dx:L;
 y = 0:dy:H;
 
 %% Plotting
-figure(1)
+subplot(1,2,1)
 contourf(x,y,FinalTempsCoolingChannel2D);
 title("Coolant Channel Steady State Temperatures (Contour)")
 xlabel("Length (m)")
@@ -146,7 +146,7 @@ ylabel("Height (m)")
 c = colorbar;
 c.Label.String = "Temperatures °C";
 
-figure(2)
+subplot(1,2,2)
 mesh(x,y,FinalTempsCoolingChannel2D);
 title("Coolant Channel Steady State Temperatures (Mesh)")
 xlabel("Length (m)")
